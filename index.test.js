@@ -47,7 +47,6 @@ test('Check preset loading', () => {
 test('Check rounding helper function', () => {
 	table = new LapLengthTable()
 	// first check with default settings
-	expect(table.roundBy).toEqual(1)
 	expect(table.roundUpTo(20.4)).toEqual(21)
 	expect(table.roundUpTo(20.0)).toEqual(20)
 	// test other rounding mutliples
