@@ -1,0 +1,26 @@
+{
+  "name": "laplengths-core",
+  "version": "0.1.0",
+  "description": "Node package for calculating rebar lap lengths per ACI 318",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axaltamirano/laplengths-core.git"
+  },
+  "keywords": [
+    "concrete",
+    "ACI"
+  ],
+  "author": "Andrew Altamirano",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/axaltamirano/laplengths-core/issues"
+  },
+  "homepage": "https://github.com/axaltamirano/laplengths-core#readme",
+  "devDependencies": {
+    "jest": "^25.1.0"
+  }
+}
