@@ -358,3 +358,8 @@ test('check compression lap splice length calculations', () => {
 	})
 	expect(table.roundUpTo(table.calcCompressionSpliceLength(0.5))).toEqual(24)
 })
+
+test('check cutoff on splice length based on bar size', () => {
+	table = new LapLengthTable()
+	expect(table.calcSpliceLength(1.693)).toEqual(null)
+})
