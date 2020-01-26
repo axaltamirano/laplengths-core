@@ -306,5 +306,55 @@ test('check hooked bar tension development length calculations', () => {
 	expect(table.roundUpTo(table.calcHookedDevelopmentLength(0.5))).toEqual(13) // #4
 	expect(table.roundUpTo(table.calcHookedDevelopmentLength(1.0))).toEqual(26) // #8
 	expect(table.roundUpTo(table.calcHookedDevelopmentLength(1.693))).toEqual(43) // #14
+})
 
+test('check compression lambda factor calculations', () => {
+	table = new LapLengthTable({
+		lightweightConcrete: false
+	})
+	expect(table.calcCompressionLambdaFactor()).toEqual(1.0)
+
+	table = new LapLengthTable({
+		lightweightConcrete: true
+	})
+	expect(table.calcCompressionLambdaFactor()).toEqual(0.75)
+})
+
+test('check compression confinement factor calculations', () => {
+	table = new LapLengthTable({
+		compressionConfinementSatisfied: true
+	})
+	expect(table.calcCompressionConfinementFactor()).toEqual(0.75)
+
+	table = new LapLengthTable({
+		compressionConfinementSatisfied: false
+	})
+	expect(table.calcCompressionConfinementFactor()).toEqual(1.0)
+})
+
+test('check compression development length calculations', () => {
+	table = new LapLengthTable({
+		fc: 4000
+	})
+	expect(table.roundUpTo(table.calcCompressionDevelopmentLength(0.5))).toEqual(10)
+	table = new LapLengthTable({
+		fc: 8000
+	})
+	expect(table.roundUpTo(table.calcCompressionDevelopmentLength(0.5))).toEqual(9)
+	table = new LapLengthTable({
+		fc: 4000,
+		lightweightConcrete: true
+	})
+	expect(table.roundUpTo(table.calcCompressionDevelopmentLength(0.5))).toEqual(13)
+})
+
+test('check compression lap splice length calculations', () => {
+	table = new LapLengthTable({
+		fy: 60000
+	})
+	expect(table.roundUpTo(table.calcCompressionSpliceLength(0.5))).toEqual(15)
+	table = new LapLengthTable({
+		fy: 80000
+	})
+	expect(table.roundUpTo(table.calcCompressionSpliceLength(0.5))).toEqual(24)
 })

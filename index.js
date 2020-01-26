@@ -8,6 +8,7 @@ const __globalDefaults = {
 	epoxyCoverSatisfied: false,
 	hookedCoverSatisfied: false,
 	hookedConfinementSatisfied: false,
+	compressionConfinementSatisfied: false,
 	codeEdition: '318-14',
 	isMetric: false,
 	preset: 'imperial',
@@ -219,6 +220,24 @@ class RebarLapLengthTable {
 	}
 
 	/**
+	 * Computes lambda factor for compression bars in accordance with:
+	 * 	ACI 318-14 Table 25.4.9.3
+	 * @returns {number} lambda, compression lightweight concrete modification factor
+	 */
+	calcCompressionLambdaFactor() {
+		return (this.lightweightConcrete) ? 0.75 : 1.0
+	}
+
+	/**
+	 * Computes confinement modification factor for compression bars in accordance with:
+	 * 	ACI 318-14 Table 25.4.9.3
+	 * @returns {number} psi_r, compression confinement modification factor, lambda
+	 */
+	calcCompressionConfinementFactor() {
+		return (this.compressionConfinementSatisfied) ? 0.75 : 1.0
+	}
+
+	/**
 	 * Calculated bar development length in accordance with:
 	 * 	ACI 318-14 Table 25.4.2.2
 	 * 	ACI 318M-14 Table 25.4.2.2
@@ -272,6 +291,36 @@ class RebarLapLengthTable {
 
 	}
 
+	calcCompressionDevelopmentLength(db) {
+		let lambda = this.calcCompressionLambdaFactor()
+		let psi_r = this.calcCompressionConfinementFactor()
+		let sqrtFc = this.calcSqrtFc()
+		let minValue = (this.isMetric)? 200 : 8
+		let factor1 = (this.isMetric)? (1/0.24) : 50
+		let factor2 = (this.isMetric)? 0.043 : 0.0003
+
+		let ldc = Math.max(this.fy * psi_r * db / (factor1 * lambda * sqrtFc), factor2 * this.fy * psi_r * db)
+		return Math.max(ldc, minValue)
+	}
+
+	calcCompressionSpliceLength(db) {
+		let cutoff = (this.isMetric)? 36 : 1.41
+		
+		let minValue = (this.isMetric)? 300 : 12
+		let factor
+		if (this.isMetric) {
+			factor = (this.fy <= 420)? 0.071*this.fy : (0.13*this.fy - 24)
+		} else {
+			factor = (this.fy <= 60000)? 0.0005 * this.fy : (0.0009*this.fy - 24)
+		}
+
+		let increaseFactorCutoff = (this.isMetric) ? 21 : 3000
+		let increaseFactor = (this.fc < increaseFactorCutoff)? 1.33 : 1.0
+
+		let lbc = Math.max(factor * db, minValue) * increaseFactor
+		return (db > cutoff)? null : lbc
+	}
+
 	/**
 	 * Helper function to round up numbers by set value
 	 * @param {number} number
@@ -295,11 +344,11 @@ class RebarLapLengthTable {
 				db: db,
 				area: Math.PI * db^2 / 4,
 				tensionTop: {
-					Ld: {
+					Ldt: {
 						meetsCover: this.roundUpTo(this.calcDevelopmentLength(db, true, true)),
 						doesNotMeetCover: this.roundUpTo(this.calcDevelopmentLength(db, true, false))
 					},
-					LTS: {
+					Lbt: {
 						meetsCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, true, true)),
 						doesNotMeetCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, true, false))
 					}
@@ -309,18 +358,14 @@ class RebarLapLengthTable {
 						meetsCover: this.roundUpTo(this.calcDevelopmentLength(db, false, true)),
 						doesNotMeetCover: this.roundUpTo(this.calcDevelopmentLength(db, false, false))
 					},
-					LTS: {
+					Lb: {
 						meetsCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, false, true)),
 						doesNotMeetCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, false, false))
 					}
 				},
 				compression: {
-					Ld: {
-
-					},
-					LTS: {
-
-					}
+					Ldc: this.calcCompressionDevelopmentLength(db),
+					Lbc: this.calcCompressionSpliceLength(db)
 				},
 				tensionHook: {
 					Ldh: this.calcHookedDevelopmentLength(db)
