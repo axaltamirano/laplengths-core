@@ -12,7 +12,8 @@ const __globalDefaults = {
 	codeEdition: '318-14',
 	isMetric: false,
 	preset: 'imperial',
-	roundBy: 1
+	roundBy: 1,
+	areaPrecision: 2
 }
 
 const __presetDefaults = {
@@ -49,7 +50,8 @@ const __presetDefaults = {
 		],
 		fy: 420,
 		fc: 30,
-		isMetric: true
+		isMetric: true,
+		areaPrecision: 0
 	},
 	"hardMetric": {
 		rebarList: [
@@ -67,7 +69,8 @@ const __presetDefaults = {
 		],
 		fy: 420,
 		fc: 30,
-		isMetric: true
+		isMetric: true,
+		areaPrecision: 0
 	}
 }
 
@@ -108,6 +111,14 @@ class RebarLapLengthTable {
 		}
 		
 		Object.assign(this, globalSettings, presetSettings, args)
+	}
+
+	/**
+	 * Calculates bar area from its diameter
+	 * @param {number} db bar diameter 
+	 */
+	calcArea(db) {
+		return ((Math.PI * (db * db)) / 4).toFixed(this.areaPrecision)
 	}
 
 	/**
@@ -414,7 +425,7 @@ class RebarLapLengthTable {
 			rows.push({
 				barSize: name,
 				db: db,
-				area: Math.PI * db^2 / 4,
+				area: this.calcArea(db),
 				tensionTop: {
 					Ldt: {
 						meetsCover: this.roundUpTo(this.calcDevelopmentLength(db, true, true)),
