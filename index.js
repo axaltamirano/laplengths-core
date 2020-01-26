@@ -291,6 +291,12 @@ class RebarLapLengthTable {
 
 	}
 
+	/**
+	 * Calculates compression development length in accordance with:
+	 * 	ACI 318-14 25.4.9.2
+	 * @param {number} db bar diameter
+	 * @returns {number} Ldc, compression development length 
+	 */
 	calcCompressionDevelopmentLength(db) {
 		let lambda = this.calcCompressionLambdaFactor()
 		let psi_r = this.calcCompressionConfinementFactor()
@@ -303,6 +309,12 @@ class RebarLapLengthTable {
 		return Math.max(ldc, minValue)
 	}
 
+	/**
+	 * Calculates compression splice length in accordance with:
+	 * 	ACI 318-14 25.5.5
+	 * @param {number} db bar diameter
+	 * @returns {number} Lbc, compression splice length 
+	 */
 	calcCompressionSpliceLength(db) {
 		let cutoff = (this.isMetric)? 36 : 1.41
 		
