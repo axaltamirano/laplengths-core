@@ -273,6 +273,21 @@ class RebarLapLengthTable {
 	}
 
 	/**
+	 * Calculated bar splice length in accordance with:
+	 * 	ACI 318-14 Table 25.5.2.1
+	 * @param {number} db bar diameter
+	 * @param {boolean} isTop does bar placement meet "top" definition
+	 * @param {boolean} meetsCover does bar meet spacing and cover?
+	 * @returns {number} development length, Ld
+	 */
+	calcSpliceLength(db, isTop, meetsCover)
+	{
+		let cutoff = (this.isMetric) ? 36 : 1.41
+		let Lb = 1.3 * this.calcDevelopmentLength(db, isTop, meetsCover)
+		return (db > cutoff)? null: Lb
+	}
+
+	/**
 	 * Calculates hooked tension development lengths in accordance with:
 	 * 	ACI 318-14 25.4.3.1
 	 * @param {number} db bar size 
@@ -361,8 +376,8 @@ class RebarLapLengthTable {
 						doesNotMeetCover: this.roundUpTo(this.calcDevelopmentLength(db, true, false))
 					},
 					Lbt: {
-						meetsCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, true, true)),
-						doesNotMeetCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, true, false))
+						meetsCover: this.roundUpTo(this.calcSpliceLength(db, true, true)),
+						doesNotMeetCover: this.roundUpTo(this.calcSpliceLength(db, true, false))
 					}
 				},
 				tensionOther: {
@@ -371,8 +386,8 @@ class RebarLapLengthTable {
 						doesNotMeetCover: this.roundUpTo(this.calcDevelopmentLength(db, false, false))
 					},
 					Lb: {
-						meetsCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, false, true)),
-						doesNotMeetCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, false, false))
+						meetsCover: this.roundUpTo(this.calcSpliceLength(db, false, true)),
+						doesNotMeetCover: this.roundUpTo(this.calcSpliceLength(db, false, false))
 					}
 				},
 				compression: {
