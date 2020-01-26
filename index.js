@@ -300,7 +300,8 @@ class RebarLapLengthTable {
 						doesNotMeetCover: this.roundUpTo(this.calcDevelopmentLength(db, true, false))
 					},
 					LTS: {
-
+						meetsCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, true, true)),
+						doesNotMeetCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, true, false))
 					}
 				},
 				tensionOther: {
@@ -309,7 +310,8 @@ class RebarLapLengthTable {
 						doesNotMeetCover: this.roundUpTo(this.calcDevelopmentLength(db, false, false))
 					},
 					LTS: {
-
+						meetsCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, false, true)),
+						doesNotMeetCover: this.roundUpTo(1.3*this.calcDevelopmentLength(db, false, false))
 					}
 				},
 				compression: {
