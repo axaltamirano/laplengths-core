@@ -416,11 +416,11 @@ class RebarLapLengthTable {
 	 */
 	getTable()
 	{
-		rows = []
-		for (row in this.rebarList)
+		let rows = []
+		for (const row of this.rebarList)
 		{
-			name = row[0]
-			db = row[1]
+			var name = row[0]
+			var db = row[1]
 
 			rows.push({
 				barSize: name,
