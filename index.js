@@ -72,7 +72,21 @@ const __presetDefaults = {
 }
 
 /**
- * 
+ * Class for calculating development and splice lengths for reinforcement
+ * @param {Object} args calculation parameters
+ * @param {number} [fc=4000] concrete compressive strength, in psi / MPa
+ * @param {number} [fy=60000] steel yield strength, in psi / MPa
+ * @param {boolean} [isMetric=false] toggle for metric units & code edition vs. imperial
+ * @param {string} [codeEdition='318-14'] applicable code edition
+ * @param {string} [preset='imperial'] preset to load in standard rebar sizes
+ * @param {boolean} [lightweightConcrete=false] trigger for lightweight concrete
+ * @param {boolean} [epoxyCoatedRebar=false] trigger for epoxy-coated rebar
+ * @param {boolean} [epoxyCoverSatisfied=false] trigger for epoxy rebar meeting additional cover requirements per ACI 318-14 Table 25.4.2.3
+ * @param {boolean} [hookedCoverSatisfied=false] trigger for hooked rebar meeting side cover requirements per ACI 318-14 Table 25.4.3.2
+ * @param {boolean} [hookedConfinementSatisfied=false] trigger for hooked rebar meeting confinement requirements per ACI 318-14 Table 25.4.3.2
+ * @param {boolean} [compressionConfinementSatisfied=false] trigger for compression rebar meeting confinement requirements per ACI 318-14 Table 25.4.9.3
+ * @param {number} [roundBy=1] setting for rounding to next digit multiple (i.e 5 rounds to next 5)
+ * @param {number} [roundByArea=0.01] setting for rounding bar area only
  */
 class RebarLapLengthTable {
 	constructor(args = {}) {
@@ -358,6 +372,37 @@ class RebarLapLengthTable {
 		return Math.ceil((number) / by) * by
 	}
 
+	/**
+	 * Lap length table response object
+	 * @typedef {Object[]} RebarLapLengthTable
+	 * @property {number} barSize rebar diameter
+	 * @property {number} area rebar area
+	 * @property {Object} tensionTop results for tension development of "top" bars
+	 * @property {Object} tensionTop.Ldt development length for top bars
+	 * @property {number} tensionTop.Ldt.meetsCover calculation for condition where cover and spacing requirements are met
+	 * @property {number} tensionTop.Ldt.doesNotMeetCover calculation when cover and spacing requirements are not met
+	 * @property {object} tensionTop.Lbt splice length for top bars
+	 * @property {number} tensionTop.Lbt.meetsCover calculation for condition where cover and spacing requirements are met
+	 * @property {number} tensionTop.Lbt.doesNotMeetCover calculation when cover and spacing requirements are not met
+	 * @property {Object} tensionOther results for tension development of "other" bars
+	 * @property {Object} tensionOther.Ld development length for other bars
+	 * @property {number} tensionOther.Ld.meetsCover calculation for condition where cover and spacing requirements are met
+	 * @property {number} tensionOther.Ld.doesNotMeetCover calculation when cover and spacing requirements are not met
+	 * @property {object} tensionOther.Lb splice length for top bars
+	 * @property {number} tensionOther.Lb.meetsCover calculation for condition where cover and spacing requirements are met
+	 * @property {number} tensionOther.Lb.doesNotMeetCover calculation when cover and spacing requirements are not met
+	 * @property {Object} compression results for compression development
+	 * @property {number} compression.Ldc compression development length
+	 * @property {number} compression.Lbc compression splice length
+	 * @property {Object} tensionHook results for tension development of hooked bars
+	 * @property {number} tensionHook.Ldh hooked tension development length
+	 */
+
+	/**
+	 * Returns the fully-calculated rebar lap length table. 
+	 * Where results are not available due to code limitation (tension splice of #14 + #18), null value is returned
+	 * @returns {RebarLapLengthTable} lap length table
+	 */
 	getTable()
 	{
 		rows = []
