@@ -447,11 +447,11 @@ class RebarLapLengthTable {
 					}
 				},
 				compression: {
-					Ldc: this.calcCompressionDevelopmentLength(db),
-					Lbc: this.calcCompressionSpliceLength(db)
+					Ldc: this.roundUpTo(this.calcCompressionDevelopmentLength(db)),
+					Lbc: this.roundUpTo(this.calcCompressionSpliceLength(db))
 				},
 				tensionHook: {
-					Ldh: this.calcHookedDevelopmentLength(db)
+					Ldh: this.roundUpTo(this.calcHookedDevelopmentLength(db))
 				}
 			})
 		}
