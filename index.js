@@ -1,6 +1,6 @@
 "use strict";
 
-const codeEditions = ['318-14']
+const codeEditions = ['318-14', '318-11']
 
 const __globalDefaults = {
 	lightweightConcrete: false,
@@ -105,7 +105,7 @@ class RebarLapLengthTable {
 			}
 		}
 		if ('codeEdition' in args) {
-			if (!(args.codeEdition in codeEditions)) {
+			if (!codeEditions.includes(args.codeEdition)) {
 				throw new Error('Code edition not recognized or supported')
 			}
 		}

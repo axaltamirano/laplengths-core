@@ -44,6 +44,19 @@ test('Check preset loading', () => {
 	expect(table.rebarList[0][0]).toEqual('8')
 })
 
+test('Check code edition validation', () => {
+	expect(() => {
+		table = new LapLengthTable({
+			codeEdition: '318-14'
+		})
+	}).not.toThrow()
+	expect(() => {
+		table = new LapLengthTable({
+			codeEdition: 'RandomCode'
+		})
+	}).toThrow()
+})
+
 test('Check rounding helper function', () => {
 	table = new LapLengthTable()
 	// first check with default settings
