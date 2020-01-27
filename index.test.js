@@ -45,6 +45,9 @@ test('Check preset loading', () => {
 })
 
 test('Check code edition validation', () => {
+	table = new LapLengthTable({
+		codeEdition: '318-14'
+	})
 	expect(() => {
 		table = new LapLengthTable({
 			codeEdition: '318-14'
