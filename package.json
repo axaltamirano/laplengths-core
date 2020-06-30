@@ -1,6 +1,6 @@
 {
   "name": "laplengths-core",
-  "version": "0.2",
+  "version": "0.2.0",
   "description": "Node package for calculating rebar lap lengths per ACI 318",
   "main": "index.js",
   "scripts": {
