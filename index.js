@@ -13,7 +13,9 @@ const __globalDefaults = {
 	isMetric: false,
 	preset: 'imperial',
 	roundBy: 1,
-	areaPrecision: 2
+	areaPrecision: 2,
+	includeSeismicIncrease: false,
+	seismicIncreaseFactor: 1.25
 }
 
 const __presetDefaults = {
@@ -294,7 +296,12 @@ class RebarLapLengthTable {
 		let lambda = this.calcLambdaFactor()
 		let sqrtFc = this.calcSqrtFc()
 
-		return db * this.fy * psi_p_e / (factor * lambda * sqrtFc)
+		let length = db * this.fy * psi_p_e / (factor * lambda * sqrtFc)
+		if (this.includeSeismicIncrease == true)
+		{
+			length = length * this.seismicIncreaseFactor
+		}
+		return length;
 	}
 
 	/**
@@ -327,6 +334,10 @@ class RebarLapLengthTable {
 		let minValue = (this.isMetric)? Math.max(150, 8*db) : Math.max(6, 8*db)
 		let ldh = this.fy * db * psi_e * psi_c * psi_r / (factor * lambda * sqrtFc)
 
+		if (this.includeSeismicIncrease == true)
+		{
+			ldh = ldh * this.seismicIncreaseFactor
+		}	
 		return Math.max(minValue, ldh)
 
 	}
