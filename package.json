@@ -21,6 +21,6 @@
   },
   "homepage": "https://github.com/axaltamirano/laplengths-core#readme",
   "devDependencies": {
-    "jest": "^26.1.0"
+    "jest": "^30.2.0"
   }
 }
